@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name=viewport content="width-device-width , initial-scale=1">
+    <title>Transfer Files</title>
+
+    <style>
+       
+       
+        .full-box {
+            width: 100vh;
+        }
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 30px 10px;
+        }
+        .nav_links {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+
+        .nav_links li {
+            padding: 10px 20px;
+            border: 1px solid #8a8a8a89;
+            border-radius: 50px;
+            font-weight: 500;
+            color: #000000bb;
+            transition: all ease 0.4s;
+            position: relative;
+            font-size: 18px;
+            overflow: hidden;
+        }
+
+        .nav_links li::after {
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            left: 0;
+            bottom: -100%;
+            border-radius: 50%;
+            transition: all ease 0.4s;
+        }
+
+        .nav_links li:hover::after {
+            bottom: 0;
+            border-radius: 0;
+        }
+
+        .nav_links li a {
+            text-decoration: none;
+            z-index: 9;
+            position: relative;
+        }
+
+        .nav_links li a:hover {
+            color: white;
+        }
+
+        .fa {
+            padding: 10px;
+            font-size: 50px;
+            width: 30px;
+            text-align: center;
+            text-decoration: none;
+            margin: 5px 2px;
+            border-radius: 70%;
+            margin-left: 500px;
+        }
+
+        .fa:hover {
+            opacity: 0.7;
+        }
+
+        .fa-facebook {
+            background: #3B5998;
+            color: white;
+        }
+
+
+        .spinner {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 90%;
+            max-width: 1200px;
+            gap: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .section {
+            flex: 1;
+            min-width: 280px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* First Section (QR Code & Button) */
+        .first-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .first-section img {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+        }
+
+        .first-section button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .first-section button:hover {
+            background-color: #45a049;
+        }
+
+        /* Second Section (File List) */
+        .second-section ul {
+            list-style: none;
+        }
+
+        .second-section ul li {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+</head>
+
+<body>
+
+    <div class="full-box">
+        <nav class="navbar">
+            <ul class="nav_links">
+                <li> <a href="/about"> About Us </a></li>
+                <li> <a href="/project"> About Project </a></li>
+                <li> <a href="/support"> Support </a></li>
+                <li> <a href="/">New Room</a></li>
+            </ul>
+        </nav>
+
+        <div class="container">
+            <!-- First Section: QR Code and Button -->
+            <div class="section first-section">
+                <img id="qr" alt="QR Code">
+                <input type="file" id="fileInput">
+                <button onclick="sendFile()">Send Files</button>
+                <div class="spinner" id="spinner"></div>
+                <p id="status"></p>
+            </div>
+
+            <!-- Second Section: Received Files List -->
+            <div class="section second-section">
+                <h2>Received Files</h2>
+                <ul id="receivedFiles">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+<!-- 
+    <div class="intro">
+        <h1 class="wel"> Welcome</h1>
+    </div>
+    <div class="intro2">
+        <h2>Transfer and have your files travel for free</h2>
+        <h3> This Project is a simple and free way to safely share your data</h3>
+    </div>
+    <div class="main">
+        <input type="file" id="fileInput">
+        <input type="button" id="MYbutton" class="Button1" value="Send Files" onclick="sendFile()">
+        <div class="spinner" id="spinner"></div>
+        <p id="status"></p>
+    <img alt="" id="qr" />
+
+      
+    </div>
+    
+    <div class="main2">
+        <input type="button" id="myButton2" class="button2" value="Recieve Files">
+       
+    </div>
+
+    <div id="receivedFiles"></div>
+    <footer>
+        <div class="waves">
+            <div class="wave" id="wave1"></div>
+            <div class="wave" id="wave2"></div>
+            <div class="wave" id="wave3"></div>
+            <div class="wave" id="wave4"></div>
+        </div>
+        <p>I hope that you will enjoy this software<br>
+            <br> 2024 PPP | All Rights Reserved
+        </p>
+    </footer>
+
+     -->
+    <script>
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+        let roomId = "";
+        let AmIReceiver = window.self.location.href.split("?").length == 2
+        let AmISending = false
+        if (AmIReceiver) {
+            qr.style.display = "none";
+        }
+        socket.on('connected', function (data) {
+            console.log(data);
+            roomId = data.roomId
+                
+            // document.getElementById('status').innerText = data.message;
+        });
+        let count = 0;
+         socket.on('x', function (data) {
+                roomId = data
+                console.log(data);
+                document.getElementById('status').innerText = ++count + " Receiver Connected";
+        });
+
+        socket.on('sent-done', function (data) {
+            console.log(data);
+            spinner.style.display = "none";
+            fileInput.value = ""
+            alert('File Sent!!');
+        })
+        socket.on('receive_file', function (data) {
+                var receivedFiles = document.getElementById('receivedFiles');
+                var list = document.createElement('li');
+                var link = document.createElement('a');
+                link.href = data.filedata;
+                link.download = data.filename;
+                link.innerText = data.filename;
+                list.appendChild(link);
+                receivedFiles.appendChild(list);
+                AmISending = false
+            });
+                
+    socket.on('qr_code', function (data) {
+        console.log(data);
+        roomId = data
+        // document.getElementById('qr').src = `{{ url_for('static', filename='qr.png') }}`;
+        document.getElementById('qr').src = `/static/${roomId}.png`;
+        // document.getElementById('qr').src = `{{ url_for('static', filename='${roomId}.png') }}`;
+    });
+    function sendFile() {
+            var fileInput = document.getElementById('fileInput');
+            AmISending = true
+            var file = fileInput.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    socket.emit('send_file', {
+                        roomId: roomId,
+                        filename: file.name,
+                        filedata: e.target.result
+                    });
+                    spinner.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+   
+        
+    </script>
+</body>
+
+</html>

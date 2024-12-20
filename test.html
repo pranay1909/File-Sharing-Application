@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload and Listing</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 90%;
+            max-width: 1200px;
+            gap: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .section {
+            flex: 1;
+            min-width: 280px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* First Section (QR Code & Button) */
+        .first-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .first-section img {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+        }
+
+        .first-section button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .first-section button:hover {
+            background-color: #45a049;
+        }
+
+        /* Second Section (File List) */
+        .second-section ul {
+            list-style: none;
+        }
+
+        .second-section ul li {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- First Section: QR Code and Button -->
+        <div class="section first-section">
+            <img src="https://via.placeholder.com/150" alt="QR Code">
+            <button>Send Files</button>
+        </div>
+
+        <!-- Second Section: Received Files List -->
+        <div class="section second-section">
+            <h2>Received Files</h2>
+            <ul>
+                <li>File 1.pdf</li>
+                <li>File 2.jpg</li>
+                <li>File 3.docx</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+
+</html>

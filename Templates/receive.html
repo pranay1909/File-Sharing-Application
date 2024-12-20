@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+</head>
+<body>
+    <h1>Received Files:</h1>
+    <div id="receivedFiles"></div>
+</body>
+<script>
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    
+        socket.on('receive_file', function (data) {
+                var receivedFiles = document.getElementById('receivedFiles');
+                var link = document.createElement('a');
+                link.href = data.filedata;
+                link.download = data.filename;
+                link.innerText = 'Download ' + data.filename;
+                receivedFiles.appendChild(link);
+                receivedFiles.appendChild(document.createElement('br'));
+            });
+</script>
+</html>
